@@ -8,6 +8,11 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.EditText;
+
+import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -18,12 +23,36 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
+        final Random r = new Random();
+        Button generate = (Button)findViewById(R.id.button_generate);
+        generate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+
+                // get values
+                boolean uppercase = ((CheckBox)findViewById(R.id.check_uppercase)).isChecked();
+                boolean lowercase = ((CheckBox)findViewById(R.id.check_lowercase)).isChecked();
+                boolean numbers = ((CheckBox)findViewById(R.id.check_numbers)).isChecked();
+                boolean symbols = ((CheckBox)findViewById(R.id.check_symbols)).isChecked();
+                int length = Integer.parseInt(((EditText)findViewById(R.id.edit_length)).getText().toString());
+
+                // construct set
+                String set = "";
+                if (uppercase) set += "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+                if (lowercase) set += "abcdefghijklmnopqrstuvwxyz";
+                if (numbers) set += "0123456789";
+                if (symbols) set += "!@#$%^&*()";//-_=+[{]}\\|;:'\",<.>/?";
+
+                // pick from set
+                String password = "";
+                int i;
+                for (i = 0; i < length; i++) {
+                    int index = r.nextInt(set.length());
+                    char ch = set.charAt(index);
+                    password += ch;
+                }
+
+                ((EditText)findViewById(R.id.edit_output)).setText(password);
             }
         });
     }
